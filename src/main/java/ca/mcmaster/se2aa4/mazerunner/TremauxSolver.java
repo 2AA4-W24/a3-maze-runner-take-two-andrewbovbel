@@ -13,7 +13,7 @@ public class TremauxSolver implements MazeSolver {
     private Maze maze;
 
     @Override
-    public Path solve(Maze maze) {
+    public Maze.Path solve(Maze maze) {
         this.maze = maze;
         marks = new int[maze.getSizeY()][maze.getSizeX()];
         logger.debug("Marking entrances...");
@@ -122,8 +122,8 @@ public class TremauxSolver implements MazeSolver {
      *
      * @return Path from start to end
      */
-    private Path tracePath() {
-        Path path = new Path();
+    private Maze.Path tracePath() {
+        Maze.Path path = new Maze.Path();
 
         Direction dir = Direction.RIGHT;
         Position pos = maze.getStart();

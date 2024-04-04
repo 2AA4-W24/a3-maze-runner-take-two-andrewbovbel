@@ -7,8 +7,8 @@ public class RightHandSolver implements MazeSolver {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public Path solve(Maze maze) {
-        Path path = new Path();
+    public Maze.Path solve(Maze maze) {
+        Maze.Path path = new Maze.Path();
 
         Position currentPos = maze.getStart();
         Direction dir = Direction.RIGHT;
