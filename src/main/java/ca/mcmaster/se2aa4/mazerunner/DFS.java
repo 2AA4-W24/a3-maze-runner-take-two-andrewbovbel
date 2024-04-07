@@ -5,6 +5,7 @@ import ca.mcmaster.se2aa4.mazerunner.Yes.Tile;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class DFS implements MazeSolver{
@@ -12,15 +13,15 @@ public class DFS implements MazeSolver{
     private Tile e;
     private Maze.Path toReturn;
 
-    private ArrayList<Direction> path = new ArrayList<>();
+    private ArrayList<DirectionTilePair> path = new ArrayList<>();
 
     private final Set<Tile> marked = new HashSet<>();
     public Maze.Path solve(Maze maze)  {
         Position start = maze.getStart();
         Position end = maze.getEnd();
 
-        System.out.println(start);
-        System.out.println(end);
+//        System.out.println(start);
+//        System.out.println(end);
 
 
         Tile t = maze.get(start.y(), start.x()).get();
@@ -28,8 +29,9 @@ public class DFS implements MazeSolver{
         Direction facing = Direction.RIGHT;
 
         newdfs(new DirectionTilePair(Direction.RIGHT, t));
+        path.removeFirst();
         System.out.println(path);
-        return toReturn;
+        return getpath(path);
 
 //        try {
 //            return dfs(t, facing, new Maze.Path());
@@ -38,10 +40,20 @@ public class DFS implements MazeSolver{
 //        }
     }
 
+    private Maze.Path getpath(ArrayList<DirectionTilePair> path) {
+        Maze.Path lol = new Maze.Path();
+        Direction facing = Direction.RIGHT;
+        for (DirectionTilePair to : path) {
+            facing = delta(facing, to.direction(),lol);
+        }
+
+        return lol;
+    }
+
     private void newdfs(DirectionTilePair t) {
 
         marked.add(t.tile());
-        path.add(t.direction());
+        path.add(t);
 
         if (t.tile().equals(e)) {
             return;
@@ -54,7 +66,18 @@ public class DFS implements MazeSolver{
             }
         }
         if (!lol) {
-            path.removeLast();
+            DirectionTilePair last = path.getLast();
+//            System.out.println(last.tile().adj().stream());
+            while (last.tile().adj().stream().allMatch(x -> marked.contains(x.tile()))) {
+                path.removeLast();
+
+                System.out.println(last.direction());
+                last = path.getLast();
+//                System.out.println("hjo");
+//                System.out.println(last.direction());
+//                last = path.removeLast();
+            }
+
             return;
         }
 

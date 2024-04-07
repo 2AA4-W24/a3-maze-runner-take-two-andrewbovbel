@@ -337,10 +337,10 @@ public class Maze {
 
 
 
-            System.out.println("column, " + column + "row, " + line);
-            for (DirectionTilePair t : raw) {
-                System.out.println(t.direction());
-            }
+//            System.out.println("column, " + column + "row, " + line);
+//            for (DirectionTilePair t : raw) {
+//                System.out.println(t.direction());
+//            }
 
             tile.setAdj(raw);
         }
