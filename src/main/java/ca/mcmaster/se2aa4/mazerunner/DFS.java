@@ -1,22 +1,21 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
 import ca.mcmaster.se2aa4.mazerunner.Yes.DirectionTilePair;
-import ca.mcmaster.se2aa4.mazerunner.Yes.NewMaze;
-import ca.mcmaster.se2aa4.mazerunner.Yes.PathTile;
 import ca.mcmaster.se2aa4.mazerunner.Yes.Tile;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public class DFS {
+public class DFS implements MazeSolver{
 
     private Tile e;
     private Maze.Path toReturn;
 
+    private ArrayList<Direction> path = new ArrayList<>();
 
     private final Set<Tile> marked = new HashSet<>();
-    public Maze.Path solve(NewMaze maze) {
+    public Maze.Path solve(Maze maze)  {
         Position start = maze.getStart();
         Position end = maze.getEnd();
 
@@ -28,34 +27,76 @@ public class DFS {
         e = maze.get(end.y(), end.x()).get();
         Direction facing = Direction.RIGHT;
 
-        dfs(t, facing, new Maze.Path());
-
+        newdfs(new DirectionTilePair(Direction.RIGHT, t));
+        System.out.println(path);
         return toReturn;
 
+//        try {
+//            return dfs(t, facing, new Maze.Path());
+//        } catch (CloneNotSupportedException ex) {
+//            throw new RuntimeException(ex);
+//        }
+    }
+
+    private void newdfs(DirectionTilePair t) {
+
+        marked.add(t.tile());
+        path.add(t.direction());
+
+        if (t.tile().equals(e)) {
+            return;
+        }
+
+        Boolean lol = false;
+        for (DirectionTilePair w : t.tile().adj()) {
+            if (!marked.contains(w.tile())) {
+                lol = true;
+            }
+        }
+        if (!lol) {
+            path.removeLast();
+            return;
+        }
+
+        for (DirectionTilePair w : t.tile().adj()) {
+            if (!marked.contains(w.tile())) {
+                newdfs(w);
+//                return;
+                           }
+        }
 
 
 
     }
 
 
-        // depth first search from t
-        private void dfs(Tile t, Direction facing, Maze.Path path) {
+    // depth first search from t
+        private Maze.Path dfs(Tile t, Direction facing, Maze.Path path) throws CloneNotSupportedException {
 
             marked.add(t);
+            System.out.println(t.getType());
 
             for (DirectionTilePair w : t.adj()) {
                 if (w.tile().equals(e)) {
                     Direction to = w.direction();
+                    System.out.println(to);
                     delta(facing, to, path);
-                    toReturn = path;
-                    return;
+                    return path;
                 }
                 if (!marked.contains(w.tile())) {
                     Direction to = w.direction();
+                    System.out.println(to);
                     facing = delta(facing, to, path);
-                    dfs(w.tile(), facing, path);
+                    Maze.Path result = dfs(w.tile(), facing, path);
+                    if (result != null) {
+                        Maze.Path cloned = result.clone();
+                        System.out.println(cloned);
+                        return result; // Return the result if found
+                    }
                 }
             }
+
+            return null;
 
         }
 

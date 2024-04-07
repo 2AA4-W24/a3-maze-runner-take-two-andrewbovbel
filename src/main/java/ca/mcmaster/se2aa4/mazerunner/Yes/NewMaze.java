@@ -39,32 +39,7 @@ public class NewMaze {
     }
 
 
-    public void setNeighbours(int line, int column) {
 
-        if (this.get(line,column).isPresent() && this.get(line,column).get().getType().equals("_")) {
-            Tile tile = this.get(line,column).get();
-
-            List<DirectionTilePair> raw = new ArrayList<>();
-
-            if (this.get(line, column - 1).isPresent() && this.get(line, column - 1).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.LEFT, this.get(line, column - 1).get()));
-            }
-
-            if (this.get(line, column + 1).isPresent() && this.get(line, column + 1).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.RIGHT, this.get(line, column + 1).get()));
-            }
-
-            if (this.get(line + 1, column).isPresent() && this.get(line + 1, column).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.DOWN, this.get(line + 1, column).get()));
-            }
-
-            if (this.get(line - 1, column).isPresent() && this.get(line - 1, column).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.UP, this.get(line - 1, column).get()));
-            }
-
-            tile.setAdj(raw);
-        }
-    }
 
 
     public void setStart(Position pos) {

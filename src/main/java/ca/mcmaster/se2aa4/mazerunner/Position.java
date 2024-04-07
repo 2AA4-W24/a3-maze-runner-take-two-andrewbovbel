@@ -11,6 +11,10 @@ public record Position(int x, int y) {
         return new Position(this.x + other.x, this.y + other.y);
     }
 
+    public int getCol() {return x;}
+    public int getLine() {return y;}
+
+
     /**
      * Return the new position after moving in provided direction.
      *

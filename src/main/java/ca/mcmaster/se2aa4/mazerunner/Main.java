@@ -1,9 +1,6 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
 
-import ca.mcmaster.se2aa4.mazerunner.Yes.MazeReader;
-import ca.mcmaster.se2aa4.mazerunner.Yes.NewMaze;
-import ca.mcmaster.se2aa4.mazerunner.Yes.Tile;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,28 +25,21 @@ public class Main {
         try {
             cmd = parser.parse(getParserOptions(), args);
             String filePath = cmd.getOptionValue('i');
-            MazeReader mazeReader = new MazeReader();
-            NewMaze maze = mazeReader.build(filePath);
+            Maze maze = new Maze(filePath);
 
-            DFS dfs = new DFS();
-            System.out.println(dfs.solve(maze).getCanonicalForm());
-
-
-
-
-//            if (cmd.getOptionValue("p") != null) {
-//                logger.info("Validating path");
-//                Maze.Path path = new Maze.Path(cmd.getOptionValue("p"));
-//                if (maze.validatePath(path)) {
-//                    System.out.println("correct path");
-//                } else {
-//                    System.out.println("incorrect path");
-//                }
-//            } else {
-//                String method = cmd.getOptionValue("method", "righthand");
-//                Maze.Path path = solveMaze(method, maze);
-//                System.out.println(path.getFactorizedForm());
-//            }
+            if (cmd.getOptionValue("p") != null) {
+                logger.info("Validating path");
+                Maze.Path path = new Maze.Path(cmd.getOptionValue("p"));
+                if (maze.validatePath(path)) {
+                    System.out.println("correct path");
+                } else {
+                    System.out.println("incorrect path");
+                }
+            } else {
+                String method = cmd.getOptionValue("method", "righthand");
+                Maze.Path path = solveMaze(method, maze);
+                System.out.println(path.getFactorizedForm());
+            }
         } catch (Exception e) {
             System.err.println("MazeSolver failed.  Reason: " + e.getMessage());
             logger.error("MazeSolver failed.  Reason: " + e.getMessage());
@@ -58,34 +48,39 @@ public class Main {
 //
         logger.info("End of MazeRunner");
     }
-//
-//    /**
-//     * Solve provided maze with specified method.
-//     *
-//     * @param method Method to solve maze with
-//     * @param maze Maze to solve
-//     * @return Maze solution path
-//     * @throws Exception If provided method does not exist
-//     */
-//    private static Maze.Path solveMaze(String method, Maze maze) throws Exception {
-//        MazeSolver solver = null;
-//        switch (method) {
-//            case "righthand" -> {
-//                logger.debug("RightHand algorithm chosen.");
-//                solver = new RightHandSolver();
-//            }
-//            case "tremaux" -> {
-//                logger.debug("Tremaux algorithm chosen.");
-//                solver = new TremauxSolver();
-//            }
-//            default -> {
-//                throw new Exception("Maze solving method '" + method + "' not supported.");
-//            }
-//        }
-//
-//        logger.info("Computing path");
-//        return solver.solve(maze);
-//    }
+
+    /**
+     * Solve provided maze with specified method.
+     *
+     * @param method Method to solve maze with
+     * @param maze Maze to solve
+     * @return Maze solution path
+     * @throws Exception If provided method does not exist
+     */
+    private static Maze.Path solveMaze(String method, Maze maze) throws Exception {
+        MazeSolver solver = null;
+        switch (method) {
+            case "righthand" -> {
+                logger.debug("RightHand algorithm chosen.");
+                solver = new RightHandSolver();
+            }
+            case "tremaux" -> {
+                logger.debug("Tremaux algorithm chosen.");
+                solver = new TremauxSolver();
+            }
+
+            case "dfs" -> {
+                logger.debug(("DFS algorithm chosen."));
+                solver = new DFS();
+            }
+            default -> {
+                throw new Exception("Maze solving method '" + method + "' not supported.");
+            }
+        }
+
+        logger.info("Computing path");
+        return solver.solve(maze);
+    }
 //
 //    /**
 //     * Get options for CLI parser.
@@ -99,8 +94,8 @@ public class Main {
         fileOption.setRequired(true);
         options.addOption(fileOption);
 
-//        options.addOption(new Option("p", true, "Path to be verified in maze"));
-//        options.addOption(new Option("method", true, "Specify which path computation algorithm will be used"));
+        options.addOption(new Option("p", true, "Path to be verified in maze"));
+        options.addOption(new Option("method", true, "Specify which path computation algorithm will be used"));
 
         return options;
     }
