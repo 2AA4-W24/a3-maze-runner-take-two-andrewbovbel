@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-public interface MazeSolver {
+public interface Algorithm {
     /**
      * Solve maze and return path through maze.
      *

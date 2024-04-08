@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DFS implements MazeSolver{
+public class DFS implements Algorithm{
     private Tile e;
     private ArrayList<Direction.DirectionTilePair> path = new ArrayList<>();
     private final Set<Tile> marked = new HashSet<>();
