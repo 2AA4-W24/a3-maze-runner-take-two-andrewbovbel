@@ -53,5 +53,7 @@ public enum Direction {
     }
 
 
+    public static record DirectionTilePair(Direction direction, Tile tile) {
 
+    }
 }

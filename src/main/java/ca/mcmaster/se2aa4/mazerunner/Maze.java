@@ -1,9 +1,5 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-import ca.mcmaster.se2aa4.mazerunner.Yes.DirectionTilePair;
-import ca.mcmaster.se2aa4.mazerunner.Yes.PathTile;
-import ca.mcmaster.se2aa4.mazerunner.Yes.Tile;
-import ca.mcmaster.se2aa4.mazerunner.Yes.WallTile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,11 +11,7 @@ import java.util.Optional;
 
 public class Maze {
     private static final Logger logger = LogManager.getLogger();
-
     private final List<List<Tile>> maze = new ArrayList<>();
-
-    private final List<Position> paths = new ArrayList<>();
-
     private final Position start;
     private final Position end;
 
@@ -34,6 +26,7 @@ public class Maze {
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         String line;
         int idy = 0;
+        List<Position> paths = new ArrayList<>();
         while ((line = reader.readLine()) != null) {
             List<Tile> newLine = new ArrayList<>();
             for (int idx = 0; idx < line.length(); idx++) {
@@ -50,9 +43,7 @@ public class Maze {
         start = findStart();
         end = findEnd();
         for (Position path : paths) {
-
                 setAdjacent(path.getLine(), path.getCol());
-
         }
     }
 
@@ -177,8 +168,8 @@ public class Maze {
         return pos.equals(endPos);
     }
 
-    public static class Path implements Cloneable{
-        private List<Character> path = new ArrayList<>();
+    public static class Path {
+        private final List<Character> path = new ArrayList<>();
 
         /**
          * Initialize an empty Path.
@@ -300,15 +291,6 @@ public class Maze {
 
             return sb.toString();
         }
-
-        @Override
-        public Path clone() throws CloneNotSupportedException {
-            Path cloned = (Path) super.clone();
-            // Deep copy the list
-            cloned.path = new ArrayList<>(this.path);
-            return cloned;
-        }
-
     }
 
     public void setAdjacent(int line, int column) {
@@ -317,30 +299,23 @@ public class Maze {
 
             Tile tile = this.get(line,column).get();
 
-            List<DirectionTilePair> raw = new ArrayList<>();
+            List<Direction.DirectionTilePair> raw = new ArrayList<>();
 
             if (this.get(line, column - 1).isPresent() && this.get(line, column - 1).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.LEFT, this.get(line, column - 1).get()));
+                raw.add(new Direction.DirectionTilePair(Direction.LEFT, this.get(line, column - 1).get()));
             }
 
             if (this.get(line, column + 1).isPresent() && this.get(line, column + 1).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.RIGHT, this.get(line, column + 1).get()));
+                raw.add(new Direction.DirectionTilePair(Direction.RIGHT, this.get(line, column + 1).get()));
             }
 
             if (this.get(line + 1, column).isPresent() && this.get(line + 1, column).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.DOWN, this.get(line + 1, column).get()));
+                raw.add(new Direction.DirectionTilePair(Direction.DOWN, this.get(line + 1, column).get()));
             }
 
             if (this.get(line - 1, column).isPresent() && this.get(line - 1, column).get().getType().equals("_")){
-                raw.add(new DirectionTilePair(Direction.UP, this.get(line - 1, column).get()));
+                raw.add(new Direction.DirectionTilePair(Direction.UP, this.get(line - 1, column).get()));
             }
-
-
-
-//            System.out.println("column, " + column + "row, " + line);
-//            for (DirectionTilePair t : raw) {
-//                System.out.println(t.direction());
-//            }
 
             tile.setAdj(raw);
         }

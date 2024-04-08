@@ -1,23 +1,19 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-import ca.mcmaster.se2aa4.mazerunner.Yes.DirectionTilePair;
-import ca.mcmaster.se2aa4.mazerunner.Yes.Tile;
-
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class DFS implements MazeSolver{
     private Tile e;
-    private ArrayList<DirectionTilePair> path = new ArrayList<>();
+    private ArrayList<Direction.DirectionTilePair> path = new ArrayList<>();
     private final Set<Tile> marked = new HashSet<>();
     public Maze.Path solve(Maze maze)  {
         Position start = maze.getStart();
         Position end = maze.getEnd();
         Tile t = maze.get(start.y(), start.x()).get();
         e = maze.get(end.y(), end.x()).get();
-        DirectionTilePair first = new DirectionTilePair(Direction.RIGHT, t);
+        Direction.DirectionTilePair first = new Direction.DirectionTilePair(Direction.RIGHT, t);
         try {
             dfs(first);
         } catch (TerminateRecursionException e) {
@@ -27,16 +23,16 @@ public class DFS implements MazeSolver{
         return getpath(path);
     }
 
-    private Maze.Path getpath(ArrayList<DirectionTilePair> nodeCollection) {
+    private Maze.Path getpath(ArrayList<Direction.DirectionTilePair> nodeCollection) {
         Maze.Path path = new Maze.Path();
         Direction facing = Direction.RIGHT;
-        for (DirectionTilePair to : nodeCollection) {
+        for (Direction.DirectionTilePair to : nodeCollection) {
             facing = delta(facing, to.direction(), path);
         }
         return path;
     }
 
-    private void dfs(DirectionTilePair t) {
+    private void dfs(Direction.DirectionTilePair t) {
 
         marked.add(t.tile());
         path.add(t);
@@ -49,7 +45,7 @@ public class DFS implements MazeSolver{
         //backtracking algorithm to remove unnecessary dead ends
         //first check if current node has unchecked neighbours
         boolean hasNeighboursUnmarked = false;
-        for (DirectionTilePair w : t.tile().adj()) {
+        for (Direction.DirectionTilePair w : t.tile().adj()) {
             if (!marked.contains(w.tile())) {
                 hasNeighboursUnmarked = true;
                 break;
@@ -57,7 +53,7 @@ public class DFS implements MazeSolver{
         }
         //if all neighbours have been visited, i.e. is a dead end, backtrack until we hit the turning point
         if (!hasNeighboursUnmarked) {
-            DirectionTilePair last = path.getLast();
+            Direction.DirectionTilePair last = path.getLast();
             while (last.tile().adj().stream().allMatch(x -> marked.contains(x.tile()))) {
                 path.removeLast();
                 last = path.getLast();
@@ -66,7 +62,7 @@ public class DFS implements MazeSolver{
         }
 
         //continue dfs
-        for (DirectionTilePair w : t.tile().adj()) {
+        for (Direction.DirectionTilePair w : t.tile().adj()) {
             if (!marked.contains(w.tile())) {
                 dfs(w);
             }
@@ -204,13 +200,13 @@ public class DFS implements MazeSolver{
     }
 
     static class TerminateRecursionException extends RuntimeException {
-        private final ArrayList<DirectionTilePair> currentState;
+        private final ArrayList<Direction.DirectionTilePair> currentState;
 
-        public TerminateRecursionException(ArrayList<DirectionTilePair> currentState) {
+        public TerminateRecursionException(ArrayList<Direction.DirectionTilePair> currentState) {
             this.currentState = currentState;
         }
 
-        public ArrayList<DirectionTilePair> getCurrentState() {
+        public ArrayList<Direction.DirectionTilePair> getCurrentState() {
             return currentState;
         }
     }
