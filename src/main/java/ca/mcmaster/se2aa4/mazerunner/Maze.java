@@ -293,7 +293,7 @@ public class Maze {
         }
     }
 
-    public void setAdjacent(int line, int column) {
+    private void setAdjacent(int line, int column) {
 
         if (this.get(line,column).isPresent() && this.get(line,column).get().getType().equals("_")) {
 
