@@ -12,9 +12,7 @@ public class Main {
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine cmd = parser.parse(getParserOptions(), args);
-            String filePath = cmd.getOptionValue('i');
-            Maze maze = new Maze(filePath);
-            processMaze(cmd, maze);
+            process(cmd);
         } catch (Exception e) {
             System.err.println("MazeRunner failed. Reason: " + e.getMessage());
             logger.error("MazeRunner failed. Reason: " + e.getMessage());
@@ -22,17 +20,21 @@ public class Main {
         logger.info("End of MazeRunner");
     }
 
-    private static void processMaze(CommandLine cmd, Maze maze) throws Exception {
+    private static void process(CommandLine cmd) throws Exception {
+        String filePath = cmd.getOptionValue('i');
         if (cmd.hasOption("p")) {
+            Maze maze = new Maze(filePath);
             validatePath(cmd, maze);
         } else {
             String method = cmd.getOptionValue("method", "righthand");
+            Solver solver = getSolver(method);
             if (cmd.hasOption("baseline")) {
                 String baselineMethod = cmd.getOptionValue("baseline");
-                Maze.Path pathMethod = solveMaze(method, maze);
-                Maze.Path pathBaseline = solveMaze(baselineMethod, maze);
+                Solver baselineSolver = getSolver(baselineMethod);
+                BenchMarker.benchmarkOperation(filePath, baselineSolver, solver);
             } else {
-                Maze.Path path = solveMaze(method, maze);
+                Maze maze = new Maze(filePath);
+                Maze.Path path = solver.solveMaze(maze);
                 System.out.println(path.getFactorizedForm());
             }
         }
@@ -48,24 +50,22 @@ public class Main {
         }
     }
 
-    private static Maze.Path solveMaze(String method, Maze maze) throws Exception {
-        Solver solver;
-        switch (method) {
+    private static Solver getSolver(String method) throws Exception {
+        return switch (method) {
             case "righthand" -> {
                 logger.debug("RightHand algorithm chosen.");
-                solver = new RightHandSolver();
+                yield new RightHandSolver();
             }
             case "tremaux" -> {
                 logger.debug("Tremaux algorithm chosen.");
-                solver = new TremauxSolver();
+                yield new TremauxSolver();
             }
             case "dfs" -> {
                 logger.debug("DFS algorithm chosen.");
-                solver = new DFSSolver();
+                yield new DFSSolver();
             }
             default -> throw new Exception("Maze solving method '" + method + "' not supported.");
         };
-        return solver.solveMaze(maze);
     }
 
     private static Options getParserOptions() {
