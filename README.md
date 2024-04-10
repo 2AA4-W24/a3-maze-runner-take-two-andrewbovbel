@@ -1,6 +1,6 @@
-# Assignment A1 - Maze Runner
+# Assignment A3 - Maze Runner Take Two
 
-* **Student**: [FIRSTNAME LASTNAME](MACID@mcmaster.ca)
+* **Student**: [ANDREW BOVBEL] (bovbela@mcmaster.ca)MACID@mcmaster.ca)
 * **Program**: B. Eng. In Software Engineering
 * **Course code**: SFWRENG 2AA4
 * **Course Title**: Software Design I - Introduction to Software Development
@@ -8,7 +8,7 @@
 
 ## Business Logic Specification
 
-This program explores a maze, finding a path from an entry point to an exit one.
+This program explores a maze, finding a path from an entry point to an exit one. Thank you Alexandre for the baseline model solution. This was forked off it.
 
 - The maze is stored in a text file, with `#` representing walls and `␣` (_empty space_) representing passages.
 - You’ll find examples of such mazes in the [`examples`](./examples) directory.
